@@ -1,8 +1,9 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
 import dotenv from "dotenv";
+import { errorHandler } from "./middlewares/error.middleware.js";
+import authRouter from "./modules/auth/auth.route.js";
 dotenv.config({
     path: "./.env",
 })
@@ -25,5 +26,9 @@ app.get("/",(req: Request, res: Response) => {
         message: "health  ok",
     })
 });
+
+app.use("/api/v1/auth", authRouter);
+
+app.use(errorHandler);
 
 export default app;
