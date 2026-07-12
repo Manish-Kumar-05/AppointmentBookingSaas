@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-        "rootDir": "./src",
-        "outDir": "./dist",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
 
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
 
-        "target": "ES2025",
-        "strict": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "skipLibCheck": true,
-        "typeRoots": ["./src/types","./node_modules/@types"]
-    },
-    "exclude": ["node_modules"],
-    "include": ["src"]
+    "target": "ES2025",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "typeRoots": ["./src/types", "./node_modules/@types"]
+  },
+  "exclude": ["node_modules"],
+  "include": ["src"]
 }
