@@ -28,3 +28,14 @@ export const createOrganization = async (
 
   return organization;
 };
+
+export const getMyOrganizations = async (userId: string) => {
+  return await prisma.organization.findMany({
+    where: {
+      ownerId: userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};

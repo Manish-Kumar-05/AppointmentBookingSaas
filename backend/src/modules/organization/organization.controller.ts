@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { createOrganizationSchema } from "./organization.schema.js";
-import { createOrganization } from "./organization.service.js";
+import {
+  createOrganization,
+  getMyOrganizations,
+} from "./organization.service.js";
 
 export const createOrg = catchAsync(async (req: Request, res: Response) => {
   const data = createOrganizationSchema.parse(req.body);
@@ -14,8 +17,18 @@ export const createOrg = catchAsync(async (req: Request, res: Response) => {
     data.timezone
   );
 
-  res.status(201).json({
+  return res.status(201).json({
     success: true,
     data: org,
+  });
+});
+
+export const getMyOrgs = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.userId as string;
+  const orgs = await getMyOrganizations(userId);
+
+  return res.status(200).json({
+    success: true,
+    data: orgs,
   });
 });
