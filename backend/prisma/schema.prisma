@@ -53,12 +53,12 @@ model Service{
   durationInMinutes       Int
   price                   Int
   currency                String
-  locationAddress         String
+  locationAddress         String?
+  isActive                Boolean        @default(true)
   
+  organization            Organization   @relation(fields: [organizationId], references: [id])
 
   bookings                Booking[]
-
-  organization            Organization   @relation(fields: [organizationId], references: [id])
 
   createdAt               DateTime       @default(now())
 }

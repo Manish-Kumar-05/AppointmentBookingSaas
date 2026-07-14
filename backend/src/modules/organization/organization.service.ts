@@ -39,3 +39,17 @@ export const getMyOrganizations = async (userId: string) => {
     },
   });
 };
+
+export const getOrganizationBySlug = async (slug: string) => {
+  const organization = await prisma.organization.findUnique({
+    where: {
+      slug,
+    },
+  });
+
+  if (!organization) {
+    throw new ApiError(404, "Organization not found");
+  }
+
+  return organization;
+};

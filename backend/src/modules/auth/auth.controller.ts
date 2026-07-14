@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { loginUserSchema, registerUserSchema } from "./auth.schema.js";
 import { registerUser, loginUser, getUserById } from "./auth.service.js";
-import { success } from "zod";
 
 export const register = catchAsync(async (req: Request, res: Response) => {
   const data = registerUserSchema.parse(req.body);
