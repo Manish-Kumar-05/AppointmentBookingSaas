@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import authRouter from "./modules/auth/auth.route.js";
 import orgRouter from "./modules/organization/organization.route.js";
+import serviceRouter from "./modules/service/service.route.js";
 
 dotenv.config({
   path: "./.env",
@@ -31,6 +32,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/organization", orgRouter);
+app.use("/api/v1/service", serviceRouter);
 
 app.use(errorHandler);
 
