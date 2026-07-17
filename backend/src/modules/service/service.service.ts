@@ -6,14 +6,22 @@ export const createService = async (
   data: createServiceData,
   userId: string
 ) => {
-  const organiztion = await prisma.organization.findUnique({
+  const organization = await prisma.organization.findUnique({
     where: {
       id: data.organizationId,
     },
   });
 
-  if (!organiztion) {
+  if (!organization) {
     throw new ApiError(404, "Organization not found");
+  }
+
+  if (organization.ownerId !== userId) {
+    throw new ApiError(403, "You are not allowed to preform this operation.");
+  }
+
+  if (data.serviceType === "OFFLINE" && !data.locationAddress) {
+    throw new ApiError(400, "Location address required for offline service.");
   }
 
   const service = await prisma.service.create({
@@ -28,6 +36,50 @@ export const createService = async (
       locationAddress: data.locationAddress,
     },
   });
+
+  return service;
+};
+
+export const getOrganizationServices = async (
+  organizationId: string,
+  userId: string
+) => {
+  const organization = await prisma.organization.findFirst({
+    where: {
+      id: organizationId,
+      ownerId: userId,
+    },
+  });
+
+  if (!organization) {
+    throw new ApiError(404, "Access Denied");
+  }
+
+  const service = await prisma.service.findMany({
+    where: {
+      organizationId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return service;
+};
+
+export const getServiceById = async (serviceId: string, userId: string) => {
+  const service = await prisma.service.findFirst({
+    where: {
+      id: serviceId,
+      organization: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (!service) {
+    throw new ApiError(404, "Service not found");
+  }
 
   return service;
 };
