@@ -25,7 +25,7 @@ export const updateServiceSchema = z.object({
     .min(5, "Description must be atleast 5 characters long")
     .optional(),
   durationInMinutes: z.number().min(5).max(720).optional(),
-  price: z.string().min(0).optional(),
+  price: z.number().min(0).optional(),
   currency: z.string().length(3).optional(),
   locationAddress: z.string().optional(),
   isActive: z.boolean().optional(),

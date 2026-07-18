@@ -1,6 +1,6 @@
 import { prisma } from "../../lib/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
-import { createServiceData } from "./service.schema.js";
+import { createServiceData, updateServiceData } from "./service.schema.js";
 
 export const createService = async (
   data: createServiceData,
@@ -82,4 +82,55 @@ export const getServiceById = async (serviceId: string, userId: string) => {
   }
 
   return service;
+};
+
+export const updateService = async (
+  serviceId: string,
+  data: updateServiceData,
+  userId: string
+) => {
+  const service = await prisma.service.findFirst({
+    where: {
+      id: serviceId,
+      organization: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (!service) {
+    throw new ApiError(404, "Service not found");
+  }
+
+  const updatedService = await prisma.service.update({
+    where: {
+      id: service.id,
+    },
+    data,
+  });
+
+  return updatedService;
+};
+
+export const deleteService = async (serviceId: string, userId: string) => {
+  const service = await prisma.service.findFirst({
+    where: {
+      id: serviceId,
+      organization: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (!service) {
+    throw new ApiError(403, "Service not found");
+  }
+
+  await prisma.service.delete({
+    where: {
+      id: serviceId,
+    },
+  });
+
+  return { message: "Service deleted successfully." };
 };

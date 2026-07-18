@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync.js";
-import { createServiceSchema } from "./service.schema.js";
+import { createServiceSchema, updateServiceSchema } from "./service.schema.js";
 import {
   createService,
+  deleteService,
   getOrganizationServices,
   getServiceById,
+  updateService,
 } from "./service.service.js";
 
 export const createServiceController = catchAsync(
@@ -44,6 +46,35 @@ export const getServiceController = catchAsync(
     return res.status(200).json({
       success: true,
       data: service,
+    });
+  }
+);
+
+export const updateServiceController = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.userId as string;
+    const serviceId = req.params.serviceId as string;
+    const data = updateServiceSchema.parse(req.body);
+
+    const updatedService = await updateService(serviceId, data, userId);
+
+    return res.status(200).json({
+      success: true,
+      data: updatedService,
+    });
+  }
+);
+
+export const deleteServiceController = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.userId as string;
+    const serviceId = req.params.serviceId as string;
+
+    const result = await deleteService(serviceId, userId);
+
+    return res.status(200).json({
+      sucess: true,
+      data: result,
     });
   }
 );
