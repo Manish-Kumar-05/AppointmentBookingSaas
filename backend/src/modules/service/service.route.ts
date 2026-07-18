@@ -3,6 +3,7 @@ import { authMiddleware } from "../../middlewares/auth.middleware.js";
 import {
   createServiceController,
   deleteServiceController,
+  getOrganizationActiveServicesController,
   getOrganizationServiceController,
   getServiceController,
   updateServiceController,
@@ -15,6 +16,10 @@ router.route("/").post(authMiddleware, createServiceController);
 router
   .route("/organization/:organizationId")
   .get(authMiddleware, getOrganizationServiceController);
+
+router
+  .route("/organization/:orgId/active-services")
+  .get(authMiddleware, getOrganizationActiveServicesController);
 
 router.route("/:serviceId").get(authMiddleware, getServiceController);
 

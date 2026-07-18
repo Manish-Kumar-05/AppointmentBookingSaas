@@ -52,7 +52,7 @@ export const getOrganizationServices = async (
   });
 
   if (!organization) {
-    throw new ApiError(404, "Access Denied");
+    throw new ApiError(403, "Access Denied");
   }
 
   const service = await prisma.service.findMany({
@@ -82,6 +82,37 @@ export const getServiceById = async (serviceId: string, userId: string) => {
   }
 
   return service;
+};
+
+export const getActiveServices = async (
+  organizationId: string,
+  userId: string
+) => {
+  const organization = await prisma.organization.findFirst({
+    where: {
+      id: organizationId,
+      ownerId: userId,
+    },
+  });
+
+  if (!organization) {
+    throw new ApiError(403, "Access Denied.");
+  }
+
+  const activeServices = await prisma.service.findMany({
+    where: {
+      organization: {
+        id: organizationId,
+        ownerId: userId,
+      },
+      isActive: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return activeServices;
 };
 
 export const updateService = async (

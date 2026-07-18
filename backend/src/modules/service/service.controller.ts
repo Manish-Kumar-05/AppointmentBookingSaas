@@ -4,10 +4,12 @@ import { createServiceSchema, updateServiceSchema } from "./service.schema.js";
 import {
   createService,
   deleteService,
+  getActiveServices,
   getOrganizationServices,
   getServiceById,
   updateService,
 } from "./service.service.js";
+import { success } from "zod";
 
 export const createServiceController = catchAsync(
   async (req: Request, res: Response) => {
@@ -46,6 +48,20 @@ export const getServiceController = catchAsync(
     return res.status(200).json({
       success: true,
       data: service,
+    });
+  }
+);
+
+export const getOrganizationActiveServicesController = catchAsync(
+  async (req: Request, res: Response) => {
+    const organizationId = req.params.orgId as string;
+    const userId = req.userId as string;
+
+    const activeServices = await getActiveServices(organizationId, userId);
+
+    return res.status(200).json({
+      success: true,
+      data: activeServices,
     });
   }
 );
