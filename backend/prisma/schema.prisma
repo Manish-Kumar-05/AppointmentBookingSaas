@@ -73,8 +73,8 @@ model AvailabilityRule{
   organizationId          String
 
   dayofWeek               Int
-  startTime               DateTime
-  endTime                 DateTime
+  startTime               String
+  endTime                 String
 
   organization            Organization          @relation(fields: [organizationId], references: [id])
 
@@ -92,7 +92,7 @@ model Booking{
   startTime               DateTime
   endTime                 DateTime
 
-  meetingLink             String
+  meetingLink             String?
 
   status                  BookingStatus           @default(PENDING)  
 
