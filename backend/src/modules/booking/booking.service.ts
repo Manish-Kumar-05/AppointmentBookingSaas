@@ -37,7 +37,7 @@ export const createBooking = async (data: createBookingData) => {
             },
           },
           {
-            end: {
+            endTime: {
               gt: startTime,
             },
           },

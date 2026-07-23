@@ -7,7 +7,7 @@ export const createBookingSchema = z
     customerName: z.string().min(1, "Customer name cannot be empty."),
     customerEmail: z.email(),
     customerPhone: z.string().optional(),
-    startTime: z.iso.datetime(),
+    startTime: z.iso.datetime({ offset: true }),
   })
   .strict();
 
