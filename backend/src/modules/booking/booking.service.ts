@@ -93,3 +93,60 @@ export const createBooking = async (data: createBookingData) => {
 
   return booking;
 };
+
+export const getBooking = async (bookingId: string) => {
+  const booking = await prisma.booking.findFirst({
+    where: {
+      id: bookingId,
+    },
+  });
+
+  if (!booking) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  return booking;
+};
+
+export const cancelBooking = async (bookingId: string) => {
+  const booking = await prisma.booking.findUnique({
+    where: {
+      id: bookingId,
+    },
+  });
+
+  if (!booking) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  const cancelledBooking = await prisma.booking.update({
+    where: {
+      id: bookingId,
+    },
+    data: {
+      status: "CANCELLED",
+    },
+  });
+
+  return cancelledBooking;
+};
+
+export const getOrganizationBookings = async (organizationId: string) => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      organizationId,
+    },
+    include: {
+      service: true,
+    },
+    orderBy: {
+      startTime: "desc",
+    },
+  });
+
+  if (!bookings) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  return bookings;
+};
