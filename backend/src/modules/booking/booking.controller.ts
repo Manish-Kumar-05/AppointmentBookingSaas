@@ -6,6 +6,7 @@ import {
   createBooking,
   getBooking,
   getOrganizationBookings,
+  getServiceBookings,
 } from "./booking.service.js";
 import { success } from "zod";
 
@@ -53,6 +54,19 @@ export const getOrganizationBookingsController = catchAsync(
     const organizationId = req.params.orgId as string;
 
     const bookings = await getOrganizationBookings(organizationId);
+
+    return res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  }
+);
+
+export const getServiceBookingsController = catchAsync(
+  async (req: Request, res: Response) => {
+    const serviceId = req.params.serviceId as string;
+
+    const bookings = await getServiceBookings(serviceId);
 
     return res.status(200).json({
       success: true,

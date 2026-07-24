@@ -150,3 +150,16 @@ export const getOrganizationBookings = async (organizationId: string) => {
 
   return bookings;
 };
+
+export const getServiceBookings = async (serviceId: string) => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      serviceId,
+    },
+    orderBy: {
+      startTime: "desc",
+    },
+  });
+
+  return bookings;
+};
