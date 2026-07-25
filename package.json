@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@types/ioredis": "^4.28.10"
+  }
+}
