@@ -9,6 +9,7 @@ import serviceRouter from "./modules/service/service.route.js";
 import availabilityRuleRouter from "./modules/availability/availability.route.js";
 import slotRouter from "./modules/slot/slot.route.js";
 import bookingRouter from "./modules/booking/booking.route.js";
+import googleRouter from "./modules/google/google.route.js";
 
 dotenv.config({
   path: "./.env",
@@ -39,6 +40,7 @@ app.use("/api/v1/service", serviceRouter);
 app.use("/api/v1/availability", availabilityRuleRouter);
 app.use("/api/v1/slot", slotRouter);
 app.use("/api/v1/booking", bookingRouter);
+app.use("/api/v1/google/", googleRouter);
 
 app.use(errorHandler);
 
