@@ -4,6 +4,7 @@ import {
   queueBookingCancelEmail,
   queueBookingConfirmationEmail,
 } from "../email/email.service.js";
+import { queueCreateMeeting } from "../meeting/meeting.service.js";
 import { createBookingData } from "./booking.schema.js";
 
 export const createBooking = async (data: createBookingData) => {
@@ -91,6 +92,10 @@ export const createBooking = async (data: createBookingData) => {
         endTime,
       },
     });
+
+    if (service.serviceType === "ONLINE") {
+      await queueCreateMeeting(booking.id);
+    }
 
     await queueBookingConfirmationEmail(booking.id);
 

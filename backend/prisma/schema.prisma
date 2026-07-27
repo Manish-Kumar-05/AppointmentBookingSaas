@@ -38,7 +38,7 @@ model Organization{
   services               Service[]   
   booking                Booking[]
   availabilityRules      AvailabilityRule[]
-  googleIntegration      GoogleIntegration[]
+  googleIntegration      GoogleIntegration?
   payments               Payment[]
 
   createdAt           DateTime       @default(now())
