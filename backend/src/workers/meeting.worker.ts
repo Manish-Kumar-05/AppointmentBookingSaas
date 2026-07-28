@@ -66,9 +66,11 @@ new Worker(
         description: "Meeting scheduled via app",
         start: {
           dateTime: booking.startTime.toISOString(),
+          timeZone: booking.organization.timezone,
         },
         end: {
           dateTime: booking.endTime.toISOString(),
+          timeZone: booking.organization.timezone,
         },
         conferenceData: {
           createRequest: {
@@ -80,6 +82,7 @@ new Worker(
     });
 
     const meetLink = event.data.conferenceData?.entryPoints?.[0]?.uri;
+    console.log(meetLink);
 
     await prisma.booking.update({
       where: {
