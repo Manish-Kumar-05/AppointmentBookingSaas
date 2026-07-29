@@ -4,6 +4,7 @@ import { redisConnection } from "../lib/redis.js";
 import { ApiError } from "../utils/ApiError.js";
 import { oauth2Client } from "../lib/google.js";
 import { google } from "googleapis";
+import { queueBookingConfirmationEmail } from "../modules/email/email.service.js";
 
 new Worker(
   "meetingQueue",
@@ -92,6 +93,8 @@ new Worker(
         meetingLink: meetLink,
       },
     });
+
+    await queueBookingConfirmationEmail(booking.id);
   },
   {
     connection: redisConnection,

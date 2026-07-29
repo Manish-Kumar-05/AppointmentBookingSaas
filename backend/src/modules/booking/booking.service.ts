@@ -22,10 +22,51 @@ export const createBooking = async (data: createBookingData) => {
     throw new ApiError(400, "Service is not active.");
   }
 
+  // ==========================
+  // START TIME
+  // ==========================
   const startTime = new Date(data.startTime);
+
   const endTime = new Date(
     startTime.getTime() + service.durationInMinutes * 60000
   );
+
+  // ==========================
+  // ADD THIS CODE HERE
+  // ==========================
+
+  const dayOfWeek = startTime.getUTCDay();
+
+  const availabilityRule = await prisma.availabilityRule.findFirst({
+    where: {
+      organizationId: data.organizationId,
+      dayofWeek: dayOfWeek,
+    },
+  });
+
+  if (!availabilityRule) {
+    throw new ApiError(400, "No availability found for this day.");
+  }
+
+  const [ruleStartHour, ruleStartMinute] = availabilityRule.startTime
+    .split(":")
+    .map(Number);
+
+  const [ruleEndHour, ruleEndMinute] = availabilityRule.endTime
+    .split(":")
+    .map(Number);
+
+  const ruleStart = ruleStartHour * 60 + ruleStartMinute;
+
+  const ruleEnd = ruleEndHour * 60 + ruleEndMinute;
+
+  const bookingStart = startTime.getUTCHours() * 60 + startTime.getUTCMinutes();
+
+  const bookingEnd = endTime.getUTCHours() * 60 + endTime.getUTCMinutes();
+
+  if (bookingStart < ruleStart || bookingEnd > ruleEnd) {
+    throw new ApiError(400, "Booking is outside available working hours.");
+  }
 
   // implementing transaction
   const booking = await prisma.$transaction(async (tx) => {
@@ -95,9 +136,9 @@ export const createBooking = async (data: createBookingData) => {
 
     if (service.serviceType === "ONLINE") {
       await queueCreateMeeting(booking.id);
+    } else {
+      await queueBookingConfirmationEmail(booking.id);
     }
-
-    await queueBookingConfirmationEmail(booking.id);
 
     return booking;
   });

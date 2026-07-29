@@ -2,7 +2,7 @@ export const bookingConfirmationTemplate = (
   customerName: string,
   serviceTitle: string,
   startTime: Date,
-  meetingLink: string | null = null
+  meetingLink: string | null
 ) => {
   if (meetingLink) {
     return `<div style="font-family:Arial; padding:20px">
@@ -14,8 +14,8 @@ export const bookingConfirmationTemplate = (
     
     <p>
         Date: ${startTime.toDateString()} <br/>
-        Time: ${startTime.toLocaleTimeString()}
-        Meeting Link : ${meetingLink}
+        Time: ${startTime.toLocaleTimeString()}<br/>
+        Meeting Link : <a href="${meetingLink}">${meetingLink}</a>
     </p>
     
     <p>See you soon.</p>

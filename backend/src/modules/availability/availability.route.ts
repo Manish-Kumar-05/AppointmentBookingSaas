@@ -11,7 +11,7 @@ const router = express.Router();
 router.route("/").post(authMiddleware, createAvailabilityRuleController);
 
 router
-  .route("/:organizationID")
+  .route("/:organizationId")
   .get(authMiddleware, getAvailabilityRulesController);
 
 router
