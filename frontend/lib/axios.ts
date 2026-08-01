@@ -2,7 +2,7 @@ import axios from "axios";
 import { tokenService } from "./auth-token";
 
 export const api = axios.create({
-  baseURL: "http://localhost:4000/api/v1",
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
 });
 
 api.interceptors.request.use((config) => {
