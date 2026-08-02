@@ -1,7 +1,8 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authApi } from "@/lib/api/auth";
 import { tokenService } from "@/lib/auth-token";
 import { IUser } from "@/types";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { LoginUserFormData, RegisterUserFormData } from "@/lib/validators/auth";
 
 interface AuthState {
   user: IUser | null;
@@ -15,28 +16,48 @@ const initialState: AuthState = {
   isLoading: true,
 };
 
+// Fetch current user
 export const fetchUser = createAsyncThunk("auth/fetchUser", async () => {
   const res = await authApi.getMe();
   return res.user;
 });
 
-export const loginUserThunk = createAsyncThunk(
-  "auth/login",
-  async (data: { email: string; password: string }) => {
+export const loginUserThunk = createAsyncThunk<
+  any,
+  LoginUserFormData,
+  { rejectValue: string }
+>("auth/login", async (data, { rejectWithValue }) => {
+  try {
     const res = await authApi.login(data);
-    tokenService.setToken(res.token);
-    return res.user;
-  },
-);
 
-export const registerUserThunk = createAsyncThunk(
-  "auth/register",
-  async (data: { name: string; email: string; password: string }) => {
+    // store token
+    tokenService.setToken(res.accessToken);
+
+    return res;
+  } catch (error: any) {
+    return rejectWithValue(
+      error?.response?.data?.message || "Invalid email or password",
+    );
+  }
+});
+
+export const registerUserThunk = createAsyncThunk<
+  any,
+  RegisterUserFormData,
+  { rejectValue: string }
+>("auth/register", async (data, { rejectWithValue }) => {
+  try {
     const res = await authApi.register(data);
-    tokenService.setToken(res.token);
+
+    tokenService.setToken(res.accessToken);
+
     return res.user;
-  },
-);
+  } catch (error: any) {
+    return rejectWithValue(
+      error?.response?.data?.message || "Registration failed",
+    );
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -47,10 +68,17 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
-  },
 
+    // resolves loading when no token
+    setAuthResolved: (state) => {
+      state.isLoading = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchUser.pending, (state) => {
+        state.isLoading = true;
+      })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
@@ -62,10 +90,14 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.isLoading = false;
       })
+
+      // Login
       .addCase(loginUserThunk.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
       })
+
+      // Register
       .addCase(registerUserThunk.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
@@ -73,5 +105,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setAuthResolved } = authSlice.actions;
 export default authSlice.reducer;
