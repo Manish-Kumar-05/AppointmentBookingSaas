@@ -17,7 +17,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   Loader2,
   Eye,
@@ -36,7 +35,6 @@ const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterUserFormData>({
     resolver: zodResolver(registerSchema),
@@ -44,17 +42,12 @@ const RegisterForm = () => {
 
   const onSubmit = async (data: RegisterUserFormData) => {
     try {
-      await dispatch(registerUserThunk(data)).unwrap();
-      toast.success("Account created!");
+      await dispatch(registerUserThunk(data));
       router.push("/dashboard");
-    } catch (error: any) {
-      const message =
-        typeof error === "string" ? error : error?.message || "Failed";
-      toast.error(message);
-      setError("email", { message });
+    } catch (error) {
+      console.log(error);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md rounded-[2rem] border-border shadow-xl bg-card overflow-hidden">

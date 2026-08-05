@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const landingPage = () => {
+const LandingPage = () => {
   return (
     <div>
       <Link href={"/auth/register"}>
@@ -11,4 +11,4 @@ const landingPage = () => {
   );
 };
 
-export default landingPage;
+export default LandingPage;

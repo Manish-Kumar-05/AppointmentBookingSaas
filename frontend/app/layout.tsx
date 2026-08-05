@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+// import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "next-themes";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +25,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
       <Providers>
         <body className="min-h-full flex flex-col">{children}</body>
