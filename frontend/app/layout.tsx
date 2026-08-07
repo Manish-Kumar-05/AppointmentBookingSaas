@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-// import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
 
 const inter = Inter({
@@ -27,9 +27,12 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} h-full antialiased`}
     >
-      <Providers>
-        <body className="min-h-full flex flex-col">{children}</body>
-      </Providers>
+      <body className="min-h-full flex flex-col">
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
+      </body>
     </html>
   );
 }

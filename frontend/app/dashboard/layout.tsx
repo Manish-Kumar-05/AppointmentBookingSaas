@@ -1,3 +1,11 @@
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <>{children}</>;
+}
+
 // "use client";
 // import Navbar from "@/components/general/Navbar";
 // import Sidebar from "@/components/general/Sidebar";
