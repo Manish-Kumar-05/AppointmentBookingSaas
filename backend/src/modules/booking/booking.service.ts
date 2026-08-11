@@ -22,18 +22,11 @@ export const createBooking = async (data: createBookingData) => {
     throw new ApiError(400, "Service is not active.");
   }
 
-  // ==========================
-  // START TIME
-  // ==========================
   const startTime = new Date(data.startTime);
 
   const endTime = new Date(
     startTime.getTime() + service.durationInMinutes * 60000
   );
-
-  // ==========================
-  // ADD THIS CODE HERE
-  // ==========================
 
   const dayOfWeek = startTime.getUTCDay();
 

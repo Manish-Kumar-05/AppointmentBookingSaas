@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import orgReducer from "./slices/organizationSlice";
 import serviceReducer from "./slices/serviceSlice";
-// import availabilityReducer from "./slices/availabilitySlice";
+import availabilityReducer from "./slices/availabilitySlice";
 // import bookingReducer from "./slices/bookingSlice";
 
 export const store = configureStore({
@@ -10,7 +10,7 @@ export const store = configureStore({
     auth: authReducer,
     org: orgReducer,
     service: serviceReducer,
-    // availability: availabilityReducer,
+    availability: availabilityReducer,
     // booking: bookingReducer,
   },
 });

@@ -5,11 +5,13 @@ import { OrganizationFormData } from "../validators/organization";
 export const organizationApi = {
   create: async (data: OrganizationFormData) => {
     const res = await api.post("/organization/registerOrg", data);
+
     return res.data.data as IOrganization;
   },
 
   getMyOrganization: async () => {
-    const res = await api.get("/myOrgs");
+    const res = await api.get("/organization/myOrgs");
+
     return res.data.data as IOrganization[];
   },
 };
