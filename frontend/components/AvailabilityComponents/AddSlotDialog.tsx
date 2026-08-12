@@ -66,7 +66,7 @@ const AddSlotDialog = ({ day }: { day: number }) => {
       await dispatch(
         createAvailabilityThunk({
           organizationId: currentOrgId,
-          dayofWeek: day,
+          dayOfWeek: day,
           startTime,
           endTime,
         }),

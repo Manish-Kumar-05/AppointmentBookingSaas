@@ -5,6 +5,7 @@ import {
   deleteServiceController,
   getOrganizationActiveServicesController,
   getOrganizationServiceController,
+  getPublicServicesController,
   getServiceController,
   updateServiceController,
 } from "./service.controller.js";
@@ -12,19 +13,16 @@ import {
 const router = express.Router();
 
 router.route("/").post(authMiddleware, createServiceController);
-
-router
-  .route("/organization/:organizationId")
-  .get(authMiddleware, getOrganizationServiceController);
-
 router
   .route("/organization/:orgId/active-services")
   .get(authMiddleware, getOrganizationActiveServicesController);
-
+router
+  .route("/organization/:orgId")
+  .get(authMiddleware, getOrganizationServiceController);
 router.route("/:serviceId").get(authMiddleware, getServiceController);
-
 router.route("/:serviceId").patch(authMiddleware, updateServiceController);
-
 router.route("/:serviceId").delete(authMiddleware, deleteServiceController);
+
+router.route("/public/:organizationId").get(getPublicServicesController);
 
 export default router;

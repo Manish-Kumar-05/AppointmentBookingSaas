@@ -6,15 +6,17 @@ import {
   deleteService,
   getActiveServices,
   getOrganizationServices,
+  getPublicServicesByOrgId,
   getServiceById,
   updateService,
 } from "./service.service.js";
-import { success } from "zod";
 
 export const createServiceController = catchAsync(
   async (req: Request, res: Response) => {
     const data = createServiceSchema.parse(req.body);
+
     const userId = req.userId as string;
+
     const service = await createService(data, userId);
 
     return res.status(201).json({
@@ -26,10 +28,10 @@ export const createServiceController = catchAsync(
 
 export const getOrganizationServiceController = catchAsync(
   async (req: Request, res: Response) => {
-    const organizationId = req.params.organizationId as string;
     const userId = req.userId as string;
+    const orgId = req.params.orgId as string;
 
-    const services = await getOrganizationServices(organizationId, userId);
+    const services = await getOrganizationServices(orgId, userId);
 
     return res.status(200).json({
       success: true,
@@ -54,10 +56,10 @@ export const getServiceController = catchAsync(
 
 export const getOrganizationActiveServicesController = catchAsync(
   async (req: Request, res: Response) => {
-    const organizationId = req.params.orgId as string;
     const userId = req.userId as string;
+    const orgId = req.params.orgId as string;
 
-    const activeServices = await getActiveServices(organizationId, userId);
+    const activeServices = await getActiveServices(orgId, userId);
 
     return res.status(200).json({
       success: true,
@@ -89,8 +91,21 @@ export const deleteServiceController = catchAsync(
     const result = await deleteService(serviceId, userId);
 
     return res.status(200).json({
-      sucess: true,
+      success: true,
       data: result,
+    });
+  }
+);
+
+export const getPublicServicesController = catchAsync(
+  async (req: Request, res: Response) => {
+    const organizationId = req.params.organizationId as string;
+
+    const services = await getPublicServicesByOrgId(organizationId);
+
+    return res.status(200).json({
+      success: true,
+      data: services,
     });
   }
 );
