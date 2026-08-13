@@ -4,7 +4,6 @@ import { ApiError } from "../../utils/ApiError.js";
 const timeToMinutes = (time: string): number => {
   const [h, m] = time.split(":").map(Number);
   return h * 60 + m;
-  //"09:45" -> ["09","45"] -> [09,45]
 };
 
 const minutesToTime = (minutes: number): string => {
@@ -46,11 +45,11 @@ export const getAvailableSlots = async (serviceId: string, date: string) => {
   const generatedSlots: string[] = [];
 
   for (
-    let current = startMinutes; //initialization
-    current + duration <= endMinutes; //condition
-    current = current + duration //updation
+    let current = startMinutes;
+    current + duration <= endMinutes;
+    current = current + duration
   ) {
-    generatedSlots.push(minutesToTime(current)); //body
+    generatedSlots.push(minutesToTime(current));
   }
 
   const startOfDay = new Date(`${date}T00:00:00`);
@@ -66,9 +65,18 @@ export const getAvailableSlots = async (serviceId: string, date: string) => {
     },
   });
 
-  const bookedTimes = bookings.map((b) =>
-    b.startTime.toISOString().slice(11, 16)
-  );
+  // const bookedTimes = bookings.map((b) =>
+  //   b.startTime.toISOString().slice(11, 16)
+  // );
+
+  const bookedTimes = bookings.map((b) => {
+    const local = new Date(b.startTime);
+
+    const hours = String(local.getHours()).padStart(2, "0");
+    const minutes = String(local.getMinutes()).padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  });
 
   const locks = await prisma.bookingLock.findMany({
     where: {
@@ -83,13 +91,21 @@ export const getAvailableSlots = async (serviceId: string, date: string) => {
     },
   });
 
-  const lockedTimes = locks.map((l) => l.startTime.toISOString().slice(11, 16));
+  // const lockedTimes = locks.map((l) => l.startTime.toISOString().slice(11, 16));
+
+  const lockedTimes = locks.map((l) => {
+    const local = new Date(l.startTime);
+
+    const hours = String(local.getHours()).padStart(2, "0");
+    const minutes = String(local.getMinutes()).padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+  });
 
   const unavailableTimes = [...bookedTimes, ...lockedTimes];
 
   const availableSlots = generatedSlots.filter(
     (slot) => !unavailableTimes.includes(slot)
   );
-
   return availableSlots;
 };

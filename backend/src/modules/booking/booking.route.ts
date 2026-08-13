@@ -11,15 +11,11 @@ import { authMiddleware } from "../../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.route("/").post(createBookingController);
-
 router.route("/:bookingId").patch(cancelBookingController);
-
-router
-  .route("/organization/:orgId")
-  .get(authMiddleware, getOrganizationBookingsController);
-
 router.route("/:bookingId").get(getBookingController);
-
+router
+  .route("/organization/:organizationId")
+  .get(authMiddleware, getOrganizationBookingsController);
 router
   .route("/service/:serviceId")
   .get(authMiddleware, getServiceBookingsController);
