@@ -20,7 +20,7 @@ export const createAvailabilityRule = async (
   const rule = await prisma.availabilityRule.create({
     data: {
       organizationId: data.organizationId,
-      dayofWeek: data.dayOfWeek,
+      dayofWeek: data.dayofWeek,
       startTime: data.startTime,
       endTime: data.endTime,
     },

@@ -4,7 +4,7 @@ export const createAvailabilitySchema = z
   .object({
     organizationId: z.string().uuid(),
 
-    dayOfWeek: z.number().min(0).max(6),
+    dayofWeek: z.number().min(0).max(6),
 
     startTime: z
       .string()
