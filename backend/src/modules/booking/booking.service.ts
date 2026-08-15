@@ -6,9 +6,12 @@ import {
 } from "../email/email.service.js";
 import { queueCreateMeeting } from "../meeting/meeting.service.js";
 import { createBookingData } from "./booking.schema.js";
+import { cache } from "../../utils/cache.js";
 
-export const createBooking = async (data: createBookingData) => {
-  const service = await prisma.service.findUnique({
+export const createBooking = async (data: createBookingData, tx: any) => {
+  const db = tx || prisma;
+
+  const service = await db.service.findUnique({
     where: {
       id: data.serviceId,
     },
@@ -19,122 +22,50 @@ export const createBooking = async (data: createBookingData) => {
   }
 
   if (!service.isActive) {
-    throw new ApiError(400, "Service is not active.");
+    throw new ApiError(400, "Service is not active");
   }
 
   const startTime = new Date(data.startTime);
-
   const endTime = new Date(
     startTime.getTime() + service.durationInMinutes * 60000
   );
 
-  const dayOfWeek = startTime.getUTCDay();
-
-  const availabilityRule = await prisma.availabilityRule.findFirst({
+  const overlappingBooking = await db.booking.findFirst({
     where: {
-      organizationId: data.organizationId,
-      dayofWeek: dayOfWeek,
+      serviceId: data.serviceId,
+      status: {
+        not: "CANCELLED",
+      },
+      AND: [{ startTime: { lt: endTime } }, { endTime: { gt: startTime } }],
     },
   });
 
-  if (!availabilityRule) {
-    throw new ApiError(400, "No availability found for this day.");
+  if (overlappingBooking) {
+    throw new ApiError(400, "Time slot already booked");
   }
 
-  const [ruleStartHour, ruleStartMinute] = availabilityRule.startTime
-    .split(":")
-    .map(Number);
-
-  const [ruleEndHour, ruleEndMinute] = availabilityRule.endTime
-    .split(":")
-    .map(Number);
-
-  const ruleStart = ruleStartHour * 60 + ruleStartMinute;
-
-  const ruleEnd = ruleEndHour * 60 + ruleEndMinute;
-
-  const bookingStart = startTime.getUTCHours() * 60 + startTime.getUTCMinutes();
-
-  const bookingEnd = endTime.getUTCHours() * 60 + endTime.getUTCMinutes();
-
-  if (bookingStart < ruleStart || bookingEnd > ruleEnd) {
-    throw new ApiError(400, "Booking is outside available working hours.");
-  }
-
-  // implementing transaction
-  const booking = await prisma.$transaction(async (tx) => {
-    const overlappingBooking = await tx.booking.findFirst({
-      where: {
-        serviceId: data.serviceId,
-        status: {
-          not: "CANCELLED",
-        },
-        AND: [
-          {
-            startTime: {
-              lt: endTime,
-            },
-          },
-          {
-            endTime: {
-              gt: startTime,
-            },
-          },
-        ],
-      },
-    });
-
-    if (overlappingBooking) {
-      throw new ApiError(400, "Time slot already booked");
-    }
-
-    // check existing booking lock
-    const existingLock = await tx.bookingLock.findFirst({
-      where: {
-        serviceId: data.serviceId,
-        expiresAt: {
-          gt: new Date(),
-        },
-        AND: [
-          {
-            startTime: {
-              lt: endTime,
-            },
-          },
-          {
-            endTime: {
-              gt: startTime,
-            },
-          },
-        ],
-      },
-    });
-
-    if (existingLock) {
-      throw new ApiError(400, "Slot is temporarily locked.");
-    }
-
-    // create booking
-    const booking = await tx.booking.create({
-      data: {
-        organizationId: data.organizationId,
-        serviceId: data.serviceId,
-        customerName: data.customerName,
-        customerEmail: data.customerEmail,
-        customerPhone: data.customerPhone,
-        startTime,
-        endTime,
-      },
-    });
-
-    if (service.serviceType === "ONLINE") {
-      await queueCreateMeeting(booking.id);
-    } else {
-      await queueBookingConfirmationEmail(booking.id);
-    }
-
-    return booking;
+  const booking = await db.booking.create({
+    data: {
+      organizationId: data.organizationId,
+      serviceId: data.serviceId,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone,
+      startTime,
+      endTime,
+    },
+    include: {
+      service: true,
+    },
   });
+
+  if (service.serviceType === "ONLINE") {
+    await queueCreateMeeting(booking.id);
+  } else {
+    await queueBookingConfirmationEmail(booking.id);
+  }
+
+  cache.del(`booking:organizationId:${booking.organizationId}`);
 
   return booking;
 };
@@ -158,6 +89,9 @@ export const cancelBooking = async (bookingId: string) => {
     where: {
       id: bookingId,
     },
+    include: {
+      organization: true,
+    },
   });
 
   if (!booking) {
@@ -175,10 +109,20 @@ export const cancelBooking = async (bookingId: string) => {
 
   await queueBookingCancelEmail(bookingId);
 
+  await cache.del(`booking:organizationId:${booking.organizationId}`);
+
   return cancelledBooking;
 };
 
 export const getOrganizationBookings = async (organizationId: string) => {
+  const cacheKey = `booking:organizationId:${organizationId}`;
+
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    console.log("Cache HIT");
+    return cached;
+  }
+
   const bookings = await prisma.booking.findMany({
     where: {
       organizationId,
@@ -191,9 +135,7 @@ export const getOrganizationBookings = async (organizationId: string) => {
     },
   });
 
-  if (!bookings) {
-    throw new ApiError(404, "Booking not found");
-  }
+  await cache.set(cacheKey, bookings, 300);
 
   return bookings;
 };

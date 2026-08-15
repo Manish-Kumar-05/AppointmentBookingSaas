@@ -3,7 +3,10 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { publicBookingApi } from "@/lib/api/publicBooking";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   CalendarDays,
   Clock,
@@ -12,6 +15,7 @@ import {
   ShieldCheck,
   ArrowRight,
 } from "lucide-react";
+import { format } from "date-fns";
 import { toast } from "sonner";
 
 import ServiceList from "@/components/PublicBookingComponents/ServiceList";

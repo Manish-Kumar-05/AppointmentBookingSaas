@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { getAvailableSlots } from "./slot.service.js";
-import { success } from "zod";
 
 export const getAvailableSlotsController = catchAsync(
   async (req: Request, res: Response) => {
@@ -17,7 +16,7 @@ export const getAvailableSlotsController = catchAsync(
 
     return res.status(200).json({
       success: true,
-      date: slots,
+      data: slots,
     });
   }
 );

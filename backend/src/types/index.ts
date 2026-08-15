@@ -1,3 +1,3 @@
 export interface IJwtUserPayLoad {
-    userId: string;
+  userId: string;
 }
