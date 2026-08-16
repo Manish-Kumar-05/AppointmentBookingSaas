@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { createServiceData, updateServiceData } from "./service.schema.js";
+import { cache } from "../../utils/cache.js";
 
 export const createService = async (
   data: createServiceData,
@@ -17,11 +18,11 @@ export const createService = async (
   }
 
   if (organization.ownerId !== userId) {
-    throw new ApiError(403, "You are not allowed to preform this operation.");
+    throw new ApiError(403, "You are not allowed to perform this operation.");
   }
 
   if (data.serviceType === "OFFLINE" && !data.locationAddress) {
-    throw new ApiError(400, "Location address required for offline service.");
+    throw new ApiError(400, "Location address required for offline service");
   }
 
   const service = await prisma.service.create({
@@ -37,6 +38,8 @@ export const createService = async (
     },
   });
 
+  await cache.del(`service:organizationId:${organization.id}`);
+
   return service;
 };
 
@@ -44,6 +47,16 @@ export const getOrganizationServices = async (
   organizationId: string,
   userId: string
 ) => {
+  const cacheKey = `service:organizationId:${organizationId}`;
+
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    console.log("Cache HIT");
+    return cached;
+  }
+
+  console.log("Cache MISS");
+
   const organization = await prisma.organization.findFirst({
     where: {
       id: organizationId,
@@ -55,7 +68,7 @@ export const getOrganizationServices = async (
     throw new ApiError(403, "Access Denied");
   }
 
-  const service = await prisma.service.findMany({
+  const services = await prisma.service.findMany({
     where: {
       organizationId,
     },
@@ -64,24 +77,9 @@ export const getOrganizationServices = async (
     },
   });
 
-  return service;
-};
+  await cache.set(cacheKey, services, 300);
 
-export const getServiceById = async (serviceId: string, userId: string) => {
-  const service = await prisma.service.findFirst({
-    where: {
-      id: serviceId,
-      organization: {
-        ownerId: userId,
-      },
-    },
-  });
-
-  if (!service) {
-    throw new ApiError(404, "Service not found");
-  }
-
-  return service;
+  return services;
 };
 
 export const getActiveServices = async (
@@ -96,23 +94,34 @@ export const getActiveServices = async (
   });
 
   if (!organization) {
-    throw new ApiError(403, "Access Denied.");
+    throw new ApiError(403, "Access Denied");
   }
 
   const activeServices = await prisma.service.findMany({
     where: {
-      organization: {
-        id: organizationId,
-        ownerId: userId,
-      },
+      organizationId,
       isActive: true,
-    },
-    orderBy: {
-      createdAt: "desc",
     },
   });
 
   return activeServices;
+};
+
+export const getServiceById = async (serviceId: string, userId: string) => {
+  const service = await prisma.service.findFirst({
+    where: {
+      id: serviceId,
+      Organization: {
+        ownerId: userId,
+      },
+    },
+  });
+
+  if (!service) {
+    throw new ApiError(404, "Service not found");
+  }
+
+  return service;
 };
 
 export const updateService = async (
@@ -123,7 +132,7 @@ export const updateService = async (
   const service = await prisma.service.findFirst({
     where: {
       id: serviceId,
-      organization: {
+      Organization: {
         ownerId: userId,
       },
     },
@@ -140,6 +149,8 @@ export const updateService = async (
     data,
   });
 
+  await cache.del(`service:organizationId:${service.organizationId}`);
+
   return updatedService;
 };
 
@@ -147,14 +158,14 @@ export const deleteService = async (serviceId: string, userId: string) => {
   const service = await prisma.service.findFirst({
     where: {
       id: serviceId,
-      organization: {
+      Organization: {
         ownerId: userId,
       },
     },
   });
 
   if (!service) {
-    throw new ApiError(403, "Service not found");
+    throw new ApiError(403, "Service not found.");
   }
 
   await prisma.service.delete({
@@ -162,6 +173,8 @@ export const deleteService = async (serviceId: string, userId: string) => {
       id: serviceId,
     },
   });
+
+  await cache.del(`service:organizationId:${service.organizationId}`);
 
   return { message: "Service deleted successfully." };
 };

@@ -1,3 +1,3 @@
-export interface IJwtUserPayLoad {
+export interface IJwtUserPayload {
   userId: string;
 }

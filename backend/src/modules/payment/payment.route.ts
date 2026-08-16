@@ -4,7 +4,7 @@ import {
   createSubscriptionController,
   verifyPaymentController,
 } from "./payment.controller.js";
-// import { handleWebHook } from "./payment.webhook.js";
+import { handleWebHook } from "./payment.webhook.js";
 
 const router = express.Router();
 

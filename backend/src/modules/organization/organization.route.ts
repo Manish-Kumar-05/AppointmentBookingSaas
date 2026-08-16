@@ -8,8 +8,8 @@ import {
 
 const router = express.Router();
 
-router.route("/registerOrg").post(authMiddleware, createOrg);
-router.route("/myOrgs").get(authMiddleware, getMyOrgs);
+router.route("/").post(authMiddleware, createOrg);
+router.route("/my-organizations").get(authMiddleware, getMyOrgs);
 router.route("/:slug").get(getOrgBySlug);
 
 export default router;

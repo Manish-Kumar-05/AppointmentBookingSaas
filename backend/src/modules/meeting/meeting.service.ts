@@ -4,6 +4,8 @@ export const queueCreateMeeting = async (bookingId: string) => {
   await meetingQueue.add(
     "create-meeting",
     { bookingId },
-    { jobId: `meeting-${bookingId}` }
+    {
+      jobId: `meeting-${bookingId}`,
+    }
   );
 };

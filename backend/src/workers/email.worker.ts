@@ -1,9 +1,10 @@
-import { Worker } from "bullmq";
+import { tryCatch, Worker } from "bullmq";
 import { prisma } from "../lib/prisma.js";
 import { resend } from "../lib/email.js";
 import {
   bookingCancelledTemplate,
   bookingConfirmationTemplate,
+  resetPasswordEmailTemplate,
 } from "../modules/email/email.templates.js";
 import { redisConnection } from "../lib/redis.js";
 import { deadLetterQueue } from "../queues/dead-letter.queue.js";
@@ -12,7 +13,21 @@ new Worker(
   "emailQueue",
   async (job) => {
     try {
-      // console.log("processing job:", job.name, job.data);
+      console.log("Processing job:", job.name, job.data);
+
+      if (job.name === "forgot-password") {
+        const { email, name, resetLink } = job.data;
+
+        await resend.emails.send({
+          from: process.env.EMAIL_FROM!,
+          to: email,
+          subject: "Reset Passowrd for Schedora",
+          html: resetPasswordEmailTemplate(name, resetLink),
+        });
+
+        return;
+      }
+
       const { bookingId } = job.data;
 
       const booking = await prisma.booking.findUnique({
@@ -32,7 +47,7 @@ new Worker(
         await resend.emails.send({
           from: process.env.EMAIL_FROM!,
           to: booking.customerEmail,
-          subject: "Booking confirmed",
+          subject: "Booking Confirmed",
           html: bookingConfirmationTemplate(
             booking.customerName,
             booking.service.title,

@@ -21,7 +21,7 @@ export const queueBookingCancelEmail = async (bookingId: string) => {
     "booking-cancelled",
     { bookingId },
     {
-      jobId: `booking-cancelled-${bookingId}`,
+      jobId: `booking-confirmation-${bookingId}`,
       removeOnComplete: true,
     }
   );

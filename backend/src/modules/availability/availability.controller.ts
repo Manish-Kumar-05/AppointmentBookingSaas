@@ -2,18 +2,19 @@ import { Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { createAvailabilitySchema } from "./availability.schema.js";
 import {
-  createAvailabilityRule,
+  createAvailablityRule,
   deleteAvailabilityRule,
   getAvailabilityRules,
 } from "./availability.service.js";
-import { success } from "zod";
 
-export const createAvailabilityRuleController = catchAsync(
+export const createAvailablityRuleController = catchAsync(
   async (req: Request, res: Response) => {
     const userId = req.userId as string;
     const data = createAvailabilitySchema.parse(req.body);
 
-    const rule = await createAvailabilityRule(data, userId);
+    console.log({ data });
+
+    const rule = await createAvailablityRule(data, userId);
 
     return res.status(201).json({
       success: true,
