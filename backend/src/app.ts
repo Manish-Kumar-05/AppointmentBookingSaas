@@ -30,11 +30,11 @@ app.use(
   })
 );
 
-// app.post(
-//   "/api/v1/payment/webhook",
-//   express.raw({ type: "application/json" }),
-//   handleWebHook
-// );
+app.post(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" }),
+  handleWebHook
+);
 
 app.get("/", (req: Request, res: Response) => {
   return res.status(200).json({

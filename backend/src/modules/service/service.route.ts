@@ -12,6 +12,8 @@ import {
 
 const router = express.Router();
 
+router.route("/public/:organizationId").get(getPublicServicesController);
+
 router.route("/").post(authMiddleware, createServiceController);
 router
   .route("/organization/:orgId/active-services")
@@ -22,7 +24,5 @@ router
 router.route("/:serviceId").get(authMiddleware, getServiceController);
 router.route("/:serviceId").patch(authMiddleware, updateServiceController);
 router.route("/:serviceId").delete(authMiddleware, deleteServiceController);
-
-router.route("/public/:organizationId").get(getPublicServicesController);
 
 export default router;
