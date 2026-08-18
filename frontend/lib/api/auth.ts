@@ -1,5 +1,9 @@
 import { api } from "../axios";
-import { LoginUserFormData, RegisterUserFormData } from "../validators/auth";
+import {
+  LoginUserFormData,
+  RegisterUserFormData,
+  ResetPasswordFormData,
+} from "../validators/auth";
 
 export interface AuthResponse {
   user: {
@@ -8,7 +12,7 @@ export interface AuthResponse {
     email: string;
     role: string;
   };
-  token: string;
+  accessToken: string;
 }
 
 export const authApi = {
@@ -24,6 +28,21 @@ export const authApi = {
 
   getMe: async () => {
     const res = await api.get("/auth/me");
+    return res.data.data;
+  },
+
+  changePassword: async (data: ResetPasswordFormData) => {
+    const res = await api.post("/auth/change-password", data);
+    return res.data.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const res = await api.post("/auth/forgot-password", { email });
+    return res.data.data;
+  },
+
+  resetPassword: async (data: { token: string; newPassword: string }) => {
+    const res = await api.post("/auth/reset-password-token", data);
     return res.data.data;
   },
 };

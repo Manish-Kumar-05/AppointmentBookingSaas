@@ -98,7 +98,8 @@ const BookingsPage = () => {
 
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-3 top-4.5 z-[100] w-4 h-4 text-muted-foreground" />
+            {/* z-[100] changed to z-100 */}
+            <Search className="absolute left-3 top-4.5 z-100 w-4 h-4 text-muted-foreground" />
 
             <Input
               placeholder="Search clients..."
@@ -230,10 +231,6 @@ const BookingsPage = () => {
                   <div className="p-6 lg:pr-8 flex items-center gap-2">
                     {!isCancelled && !isBookingPast && (
                       <AlertDialog>
-                        {/* FIX:
-                            Base UI does not support asChild.
-                            Use render instead.
-                        */}
                         <AlertDialogTrigger
                           render={
                             <Button

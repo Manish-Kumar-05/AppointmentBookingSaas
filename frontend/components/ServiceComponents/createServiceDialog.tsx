@@ -109,7 +109,7 @@ export default function CreateServiceDialog() {
         }
       />
 
-      <DialogContent className="max-w-[95vw] lg:max-w-[900px] p-0 overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-2xl">
+      <DialogContent className="max-w-[95vw] lg:max-w-225 p-0 overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-2xl">
         <div className="flex flex-col lg:flex-row h-full max-h-[90vh]">
           {/* Form Side */}
           <div className="flex-1 p-8 overflow-y-auto bg-background">
@@ -147,7 +147,7 @@ export default function CreateServiceDialog() {
               <div className="space-y-2">
                 <Textarea
                   placeholder="Briefly describe the value of this session..."
-                  className="rounded-xl min-h-[100px] resize-none"
+                  className="rounded-xl min-h-25 resize-none"
                   {...register("description")}
                 />
 
@@ -290,7 +290,7 @@ export default function CreateServiceDialog() {
           </div>
 
           {/* Preview Side */}
-          <div className="hidden lg:flex w-[380px] bg-muted p-8 flex-col justify-center border-l border-border">
+          <div className="hidden lg:flex w-95 bg-muted p-8 flex-col justify-center border-l border-border">
             <ServicePreview data={formData} />
           </div>
         </div>

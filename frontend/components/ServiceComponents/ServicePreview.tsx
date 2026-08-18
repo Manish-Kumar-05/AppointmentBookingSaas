@@ -28,7 +28,7 @@ export function ServicePreview({ data }: PreviewProps) {
       {/* Card */}
       <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-4 transition-all">
         <div className="flex justify-between items-start gap-4">
-          <h3 className="font-bold text-xl text-foreground leading-tight break-words">
+          <h3 className="font-bold text-xl text-foreground leading-tight wrap-break-word">
             {data.title || "Untitled Service"}
           </h3>
 
@@ -40,7 +40,7 @@ export function ServicePreview({ data }: PreviewProps) {
           </Badge>
         </div>
 
-        <p className="text-sm text-muted-foreground leading-relaxed min-h-[60px]">
+        <p className="text-sm text-muted-foreground leading-relaxed min-h-15">
           {data.description || "Describe your service to attract clients..."}
         </p>
 

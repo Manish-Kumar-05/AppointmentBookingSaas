@@ -38,6 +38,7 @@ export default function ServicesPage() {
         <div className="p-4 bg-background rounded-full shadow-sm mb-4">
           <Sparkles className="w-10 h-10 text-primary opacity-20" />
         </div>
+
         <p className="text-xl font-medium text-muted-foreground">
           Select an organization to manage services
         </p>
@@ -52,10 +53,12 @@ export default function ServicesPage() {
           <h1 className="text-5xl font-black tracking-tighter text-foreground">
             Services
           </h1>
+
           <p className="text-muted-foreground mt-2 text-lg">
             Configure and preview your booking offerings.
           </p>
         </div>
+
         <CreateServiceDialog />
       </header>
 
@@ -64,6 +67,7 @@ export default function ServicesPage() {
           <h3 className="text-lg font-semibold text-foreground">
             No services found
           </h3>
+
           <p className="text-muted-foreground">
             Ready to start? Create your first service above.
           </p>
@@ -95,6 +99,7 @@ export default function ServicesPage() {
                       ) : (
                         <MapPin className="w-3 h-3 mr-1" />
                       )}
+
                       {service.serviceType}
                     </Badge>
 
@@ -117,7 +122,7 @@ export default function ServicesPage() {
                   />
                 </div>
 
-                <p className="text-muted-foreground text-sm line-clamp-2 min-h-[40px]">
+                <p className="text-muted-foreground text-sm line-clamp-2 min-h-10">
                   {service.description ||
                     "No description provided for this service."}
                 </p>
@@ -127,6 +132,7 @@ export default function ServicesPage() {
                     <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">
                       Duration
                     </span>
+
                     <span className="font-bold text-foreground flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-primary" />
                       {service.durationInMinutes}m
@@ -137,6 +143,7 @@ export default function ServicesPage() {
                     <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">
                       Price
                     </span>
+
                     <span className="font-bold text-foreground flex items-center gap-0.5">
                       <IndianRupee className="w-3.5 h-3.5 text-primary" />
                       {service.price}
@@ -157,6 +164,7 @@ export default function ServicesPage() {
                           await dispatch(
                             deleteServiceThunk(service.id),
                           ).unwrap();
+
                           toast.success("Service deleted");
                         } catch {
                           toast.error("Delete failed");

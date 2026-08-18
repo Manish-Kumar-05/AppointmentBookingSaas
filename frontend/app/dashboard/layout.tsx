@@ -1,4 +1,5 @@
 "use client";
+
 import Navbar from "@/components/general/Navbar";
 import Sidebar from "@/components/general/Sidebar";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -41,7 +42,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 </div>
 
                 {/* Subtle Glow */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-125 h-125 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
               </div>
             </main>
           </div>

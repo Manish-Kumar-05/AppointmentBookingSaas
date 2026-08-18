@@ -12,7 +12,7 @@ import bookingRouter from "./modules/booking/booking.route.js";
 import googleRouter from "./modules/google/google.route.js";
 import { googleCallback } from "./modules/google/google.controller.js";
 import paymentRouter from "./modules/payment/payment.route.js";
-// import { handleWebHook } from "./modules/payment/payment.webhook.js";
+import { handleWebHook } from "./modules/payment/payment.webhook.js";
 
 dotenv.config({
   path: "./.env",

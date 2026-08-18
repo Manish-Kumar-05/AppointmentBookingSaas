@@ -13,6 +13,7 @@ import React, { useEffect } from "react";
 
 const OrganizationPage = () => {
   const dispatch = useAppDispatch();
+
   const { organizations, currentOrgId, isLoading } = useAppSelector(
     (s) => s.org,
   );
@@ -28,10 +29,12 @@ const OrganizationPage = () => {
           <h1 className="text-5xl font-black tracking-tighter text-foreground">
             Organizations
           </h1>
+
           <p className="text-muted-foreground mt-1">
             Select or create an organization to manage your appointments.
           </p>
         </div>
+
         <CreateOrgDialog />
       </div>
 
@@ -54,7 +57,7 @@ const OrganizationPage = () => {
             No organizations found
           </h2>
 
-          <p className="text-muted-foreground text-sm mt-2 max-w-[250px] text-center">
+          <p className="text-muted-foreground text-sm mt-2 max-w-62.5 text-center">
             You haven&apos;t joined any organizations yet. Create one to get
             started.
           </p>
@@ -81,7 +84,7 @@ const OrganizationPage = () => {
               <Card
                 key={org.id}
                 onClick={() => dispatch(setCurrentOrg(org.id))}
-                className={`group relative overflow-hidden cursor-pointer transition-all duration-300 rounded-3xl border-2 p-6 
+                className={`group relative overflow-hidden cursor-pointer transition-all duration-300 rounded-3xl border-2 p-6
                   hover:border-primary/50 hover:shadow-lg hover:-translate-y-1
                   ${
                     isActive
@@ -114,6 +117,7 @@ const OrganizationPage = () => {
 
                     <div className="flex items-center gap-1.5 mt-1 text-muted-foreground">
                       <Globe className="w-3.5 h-3.5" />
+
                       <span className="text-xs font-medium tabular-nums">
                         {org.slug}
                       </span>

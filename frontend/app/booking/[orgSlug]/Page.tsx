@@ -41,20 +41,24 @@ const Page = () => {
       try {
         const org = await publicBookingApi.getOrganizationBySlug(orgSlug);
         setOrganization(org);
+
         const servicesData = await publicBookingApi.getServices(org.id);
         setServices(servicesData);
       } catch (err) {
         toast.error("Business not found.");
       }
     };
+
     if (orgSlug) init();
   }, [orgSlug]);
 
   const fetchSlots = useCallback(
     async (service: any, selectedDate: Date, isSilent = false) => {
       if (!isSilent) setLoadingSlots(true);
+
       try {
         const formattedDate = selectedDate.toISOString().split("T")[0];
+
         const freshSlots = await publicBookingApi.getSlots(
           service.id,
           formattedDate,
@@ -85,24 +89,30 @@ const Page = () => {
 
   useEffect(() => {
     if (!selectedService || !date) return;
+
     fetchSlots(selectedService, date, false);
+
     const interval = setInterval(
       () => fetchSlots(selectedService, date, true),
       10000,
     );
+
     return () => clearInterval(interval);
   }, [selectedService, date, fetchSlots]);
 
   useEffect(() => {
     if (selectedSlot && formRef.current) {
-      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      formRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   }, [selectedSlot]);
 
   if (!organization) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-6">
-        <Skeleton className="h-[500px] w-full max-w-2xl rounded-[3rem]" />
+        <Skeleton className="h-125 w-full max-w-2xl rounded-[3rem]" />
       </div>
     );
   }
@@ -112,21 +122,24 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Dynamic Header */}
-      <div className="w-full bg-card border-b border-border sticky top-0 z-50 px-6 py-4 backdrop-blur-md bg-card/80">
+      <div className="w-full bg-card/80 border-b border-border sticky top-0 z-50 px-6 py-4 backdrop-blur-md">
         <div className="max-w-2xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold text-foreground tracking-tight">
               {organization.name}
             </h1>
+
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1">
               <ShieldCheck className="w-3 h-3 text-emerald-500" /> Verified
               Merchant
             </p>
           </div>
+
           <div className="text-right">
             <p className="text-[10px] font-black text-muted-foreground uppercase mb-1">
               Step {step}/4
             </p>
+
             <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
               <div
                 className="h-full bg-foreground transition-all duration-500 ease-out"
@@ -145,6 +158,7 @@ const Page = () => {
             title="Select Service"
             active={!!selectedService}
           />
+
           <ServiceList
             services={services}
             selected={selectedService}
@@ -160,6 +174,7 @@ const Page = () => {
         {selectedService && (
           <section className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
             <SectionHeader number="2" title="Select Date" active={!!date} />
+
             <DatePicker value={date} onChange={setDate} />
           </section>
         )}
@@ -172,6 +187,7 @@ const Page = () => {
               title="Available Times"
               active={!!selectedSlot}
             />
+
             <SlotPicker
               slots={slots}
               selected={selectedSlot}
@@ -208,12 +224,15 @@ const Page = () => {
               <p className="text-[10px] font-bold opacity-70 uppercase tracking-widest">
                 Final Price
               </p>
+
               <p className="text-xl font-black italic">
                 ₹{selectedService.price}
               </p>
             </div>
+
             <div className="flex items-center gap-2 opacity-70 text-xs font-medium pr-2">
-              {selectedSlot} <ArrowRight className="w-4 h-4" />
+              {selectedSlot}
+              <ArrowRight className="w-4 h-4" />
             </div>
           </div>
         </div>
@@ -235,12 +254,13 @@ const SectionHeader = ({
     <div
       className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold transition-all duration-500 shadow-sm ${
         active
-          ? "bg-emerald-500 text-white scale-90 rotate-[360deg]"
+          ? "bg-emerald-500 text-white scale-90 rotate-360"
           : "bg-card border border-border text-muted-foreground"
       }`}
     >
       {active ? <CheckCircle2 className="w-6 h-6" /> : number}
     </div>
+
     <h2
       className={`text-xl font-black tracking-tight transition-colors ${
         active ? "text-foreground" : "text-muted-foreground/40"

@@ -84,7 +84,6 @@ export default function EditServiceDialog({ service }: { service: IService }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* Base UI equivalent of Radix `asChild` */}
       <DialogTrigger
         render={
           <Button variant="ghost" size="icon" className="cursor-pointer" />
@@ -94,11 +93,9 @@ export default function EditServiceDialog({ service }: { service: IService }) {
         <span className="sr-only">Edit</span>
       </DialogTrigger>
 
-      <DialogContent className="max-w-[95vw] lg:max-w-[850px] p-0 overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-2xl">
+      <DialogContent className="max-w-[95vw] lg:max-w-212.5 p-0 overflow-hidden rounded-[2.5rem] border border-border bg-card shadow-2xl">
         <div className="flex flex-col lg:flex-row h-full max-h-[90vh]">
-          {/* =========================
-              FORM SIDE
-          ========================= */}
+          {/* FORM SIDE */}
           <div className="flex-1 p-8 overflow-y-auto bg-background">
             <DialogHeader className="mb-8">
               <DialogTitle className="text-2xl font-bold tracking-tight text-foreground">
@@ -111,9 +108,7 @@ export default function EditServiceDialog({ service }: { service: IService }) {
             </DialogHeader>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* =========================
-                  TITLE
-              ========================= */}
+              {/* TITLE */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2 text-xs uppercase font-bold text-muted-foreground ml-1">
                   <Type className="w-3.5 h-3.5" />
@@ -129,9 +124,7 @@ export default function EditServiceDialog({ service }: { service: IService }) {
                 )}
               </div>
 
-              {/* =========================
-                  DESCRIPTION
-              ========================= */}
+              {/* DESCRIPTION */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2 text-xs uppercase font-bold text-muted-foreground ml-1">
                   <FileText className="w-3.5 h-3.5" />
@@ -139,7 +132,7 @@ export default function EditServiceDialog({ service }: { service: IService }) {
                 </Label>
 
                 <Textarea
-                  className="rounded-xl min-h-[120px] resize-none"
+                  className="rounded-xl min-h-30 resize-none"
                   {...register("description")}
                 />
 
@@ -150,9 +143,7 @@ export default function EditServiceDialog({ service }: { service: IService }) {
                 )}
               </div>
 
-              {/* =========================
-                  PRICE + DURATION
-              ========================= */}
+              {/* PRICE + DURATION */}
               <div className="grid grid-cols-2 gap-6 pt-2">
                 {/* Duration */}
                 <div className="space-y-2">
@@ -201,9 +192,7 @@ export default function EditServiceDialog({ service }: { service: IService }) {
                 </div>
               </div>
 
-              {/* =========================
-                  SUBMIT
-              ========================= */}
+              {/* SUBMIT */}
               <div className="flex gap-3 pt-6">
                 <Button
                   type="submit"
@@ -223,10 +212,8 @@ export default function EditServiceDialog({ service }: { service: IService }) {
             </form>
           </div>
 
-          {/* =========================
-              PREVIEW SIDE
-          ========================= */}
-          <div className="hidden lg:flex w-[350px] bg-muted p-8 flex-col justify-center border-l border-border">
+          {/* PREVIEW SIDE */}
+          <div className="hidden lg:flex w-87.5 bg-muted p-8 flex-col justify-center border-l border-border">
             <ServicePreview data={formData} />
           </div>
         </div>
