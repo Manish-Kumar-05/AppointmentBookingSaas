@@ -45,11 +45,11 @@ const Navbar = () => {
             {" "}
             <h1 className="text-xl font-black leading-none tracking-tighter text-foreground">
               {" "}
-              Schedora{" "}
+              HURRY{" "}
             </h1>{" "}
             <span className="mt-1 text-[9px] font-black uppercase tracking-[0.15em] text-muted-foreground">
               {" "}
-              Scheduling Suite{" "}
+              Booked your time{" "}
             </span>{" "}
           </div>{" "}
         </div>{" "}
