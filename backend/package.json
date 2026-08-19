@@ -9,7 +9,7 @@
     "start": "node dist/index.js",
     "worker": "tsx src/starter-worker.ts",
     "worker:dev": "tsx watch src/starter-worker.ts",
-    "db:migrate": "npx prisma migrate dev --name init",
+    "db:migrate:deploy": "prisma migrate deploy",
     "db:generate": "npx prisma generate"
   },
   "keywords": [],
