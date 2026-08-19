@@ -8,7 +8,7 @@ import { queueCreateMeeting } from "../meeting/meeting.service.js";
 import { createBookingData } from "./booking.schema.js";
 import { cache } from "../../utils/cache.js";
 
-export const createBooking = async (data: createBookingData, tx: any) => {
+export const createBooking = async (data: createBookingData, tx?: any) => {
   const db = tx || prisma;
 
   const service = await db.service.findUnique({
