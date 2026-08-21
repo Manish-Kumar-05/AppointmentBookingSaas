@@ -39,20 +39,13 @@ const Page = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        console.log("Slug:", orgSlug);
-
         const org = await publicBookingApi.getOrganizationBySlug(orgSlug);
-        console.log("Organization:", org);
-
         setOrganization(org);
 
         const servicesData = await publicBookingApi.getServices(org.id);
-        console.log("Services:", servicesData);
-
         setServices(servicesData);
       } catch (err) {
-        console.error("Booking page error:", err);
-        toast.error("Failed to load booking page.");
+        toast.error("Business not found.");
       }
     };
 
