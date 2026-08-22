@@ -21,7 +21,7 @@ new Worker(
         await resend.emails.send({
           from: process.env.EMAIL_FROM!,
           to: email,
-          subject: "Reset Passowrd for Schedora",
+          subject: "Reset Passowrd for Hurry",
           html: resetPasswordEmailTemplate(name, resetLink),
         });
 
