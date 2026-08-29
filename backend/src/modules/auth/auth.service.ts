@@ -146,7 +146,7 @@ export const logoutUser = async (incomingToken: string) => {
   await prisma.refreshToken
     .updateMany({
       where: { token: incomingToken, isRevoked: false },
-      data: { revoked: true },
+      data: { isRevoked: true },
     })
     .catch(() => {});
 };
