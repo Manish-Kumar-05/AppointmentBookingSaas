@@ -36,6 +36,7 @@ export interface IAvailability {
 
 export interface IBooking {
   id: string;
+
   organizationId: string;
   serviceId: string;
 
@@ -46,10 +47,19 @@ export interface IBooking {
   startTime: string;
   endTime: string;
 
-  status: "PENDING" | "CONFIRMED" | "CANCELLED";
+  meetingLink?: string;
+
+  createdAt?: string;
+
+  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
 
   service?: {
     id: string;
     title: string;
+    description?: string;
+    serviceType?: "ONLINE" | "OFFLINE";
+    durationInMinutes?: number;
+    price?: number;
+    currency?: string;
   };
 }
